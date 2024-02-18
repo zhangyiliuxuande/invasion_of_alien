@@ -80,13 +80,14 @@ class AlienInvasion:
         """创建一个外星舰队"""
         #计时创建外星人
         time_passed = time.time() - start_time
-
-        if int(time_passed) % self.settings.alien_create_rate  == 0 and self.create_flag:
+        mod = time_passed % self.settings.alien_create_rate
+        
+        if mod <= 0.1 and self.create_flag:
             alien = Alien(self)
             self.aliens.add(alien)
             self.create_flag = False
             print(time_passed)
-        elif int(time_passed) % self.settings.alien_create_rate != 0:
+        elif mod > 0.1  :
             self.create_flag = True
 
     def _update_aliens(self):

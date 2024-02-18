@@ -17,5 +17,5 @@ class Settings:
         self.bullet_allowed = 5
 
         #外星人设置
-        self.alien_speed = 5.0
-        self.alien_create_rate = 2
+        self.alien_speed = 4.0
+        self.alien_create_rate = 1.2
