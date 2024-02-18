@@ -29,5 +29,3 @@ class Bullet(Sprite):
     def draw_bullet(self):
         """在屏幕上绘制子弹"""
         self.screen.blit(self.image,self.rect)
-
-        #pygame.draw.rect(self.screen,self.settings.bullet_color,self.rect)

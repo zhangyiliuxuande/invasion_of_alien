@@ -14,7 +14,8 @@ class Settings:
 
         #子弹设置
         self.bullet_speed = 10.0
-        self.bullet_width = 10
-        self.bullet_height = 50
-        self.bullet_color = (0,0,0)
         self.bullet_allowed = 5
+
+        #外星人设置
+        self.alien_speed = 5.0
+        self.alien_create_rate = 2
