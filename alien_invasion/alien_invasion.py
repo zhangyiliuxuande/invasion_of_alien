@@ -4,6 +4,7 @@ import time
 import pygame
 
 from settings import Settings
+from game_stats import GameStats
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -21,6 +22,7 @@ class AlienInvasion:
             (self.settings.screen_width,self.settings.screen_height))
         pygame.display.set_caption("外星人入侵")
 
+        self.stats = GameStats(self)
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
@@ -81,7 +83,7 @@ class AlienInvasion:
         #计时创建外星人
         time_passed = time.time() - start_time
         mod = time_passed % self.settings.alien_create_rate
-        
+
         if mod <= 0.1 and self.create_flag:
             alien = Alien(self)
             self.aliens.add(alien)
@@ -91,8 +93,12 @@ class AlienInvasion:
             self.create_flag = True
 
     def _update_aliens(self):
-        """更新外星飞船位置并删除到达底边的外星人"""
+        """更新外星人位置并删除碰到飞船和到达底边的外星人"""
         self.aliens.update()
+
+        #外星人与飞船碰撞
+        if pygame.sprite.spritecollideany(self.ship,self.aliens):
+            self._ship_hit()
 
         #删除到达底边的外星人
         for alien in self.aliens.copy():
@@ -107,7 +113,7 @@ class AlienInvasion:
 
         #删除已消失的子弹
         for bullet in self.bullets.copy():
-            if bullet.rect.bottom <=0:
+            if bullet.rect.bottom <=0: 
                 self.bullets.remove(bullet)
 
         #删除击中外星人的子弹和飞船
@@ -124,6 +130,20 @@ class AlienInvasion:
         
         #使更新的屏幕可见
         pygame.display.flip()
+
+    def _ship_hit(self):
+        """响应外星人和飞船的碰撞"""
+        #将ship_left减1
+        self.stats.ships_left -= 1
+
+        #清空外星人列表
+        self.aliens.empty()
+
+        #将飞船放在屏幕底部中央
+        self.ship.center_ship()
+
+        #暂停
+        time.sleep(0.5)
 
 
 #if __name__ == 'main':
