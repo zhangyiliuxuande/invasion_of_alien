@@ -9,3 +9,5 @@ class GameStats:
     def reset_stats(self):
         """初始化游戏运行时可能变化的统计信息"""
         self.ships_left = self.settings.ship_limit
+        self.alien_collision, self.last_alien_collision = 0, 0
+        self.score = 0
