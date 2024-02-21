@@ -39,4 +39,4 @@ class Settings:
         self.bullet_speed *= self.speedup_scale
         self.alien_speed *= self.speedup_scale
         self.alien_create_rate /= self.speedup_scale
-        self.alien_points *= self.speedup_scale
+        self.alien_points = self.alien_points * self.speedup_scale

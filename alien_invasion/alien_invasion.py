@@ -33,7 +33,7 @@ class AlienInvasion:
         self.stats.last_alien_collision = 0
 
         #创建记分牌
-        self.scorebord = ScoreBoard(self)
+        self.scoreboard = ScoreBoard(self)
 
         #游戏启动后处于活动状态
         self.game_active = False
@@ -84,6 +84,8 @@ class AlienInvasion:
             
             #重置游戏的统计信息
             self.stats.reset_stats()
+            self.scoreboard.prep_score()
+            self.scoreboard.prep_ships()
             self.game_active = True
 
             #清空外星人和子弹列表
@@ -158,10 +160,13 @@ class AlienInvasion:
                 self.bullets.remove(bullet)
 
         #删除击中外星人的子弹和飞船
-        if pygame.sprite.groupcollide(self.bullets,self.aliens,True,True):
-            self.stats.alien_collision += 1
-            self.stats.score += self.settings.alien_points
-            self.scorebord.prep_score()
+        collisions = pygame.sprite.groupcollide(self.bullets,self.aliens,True,True)
+        if collisions:
+            for aliens in collisions.values():
+                self.stats.alien_collision += 1
+                self.stats.score += self.settings.alien_points * len(aliens)
+            self.scoreboard.prep_score()
+            self.scoreboard.check_high_score()
 
     def _update_screen(self):
         """更新屏幕上的图像，并切换至新屏幕"""
@@ -173,7 +178,7 @@ class AlienInvasion:
         self.aliens.draw(self.screen)
 
         #显示得分
-        self.scorebord.show_score()
+        self.scoreboard.show_score()
         
         #如果游戏处于非活动状态，就绘制Play按钮
         if not self.game_active:
@@ -187,9 +192,11 @@ class AlienInvasion:
         if self.stats.ships_left > 0:
             #将ship_left减1
             self.stats.ships_left -= 1
+            self.scoreboard.prep_ships()
 
             #清空外星人列表
             self.aliens.empty()
+            self.bullets.empty()
 
             #将飞船放在屏幕底部中央
             self.ship.center_ship()
@@ -202,7 +209,6 @@ class AlienInvasion:
 
     def _speed_up(self):
         """加快游戏的速度"""
-        print(self.stats.alien_collision)
         if self.stats.alien_collision % 10 == 0 and self.stats.alien_collision > self.stats.last_alien_collision:
             self.settings.increase_speed()
             self.stats.last_alien_collision = self.stats.alien_collision

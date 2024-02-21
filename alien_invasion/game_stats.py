@@ -3,6 +3,7 @@ class GameStats:
 
     def __init__(self,ai_game):
         """初始化统计信息"""
+        self.high_score = 0
         self.settings = ai_game.settings
         self.reset_stats()
 
